@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("ImageMerge")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("OMICRON electronics")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ImageMerge")]
-[assembly: AssemblyCopyright("Copyright © OMICRON electronics 2013")]
+[assembly: AssemblyCopyright("Copyright © Christoph Fink")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
