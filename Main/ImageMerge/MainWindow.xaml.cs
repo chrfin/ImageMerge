@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,6 +53,15 @@ namespace ImageMerge
 			{
 				string outFile = sfd.FileName;
 				DateTime start = DateTime.Now;
+
+				FileStream csvFile;
+				StreamWriter csvWriter = null;
+				if (checkBoxCsv.IsChecked == true)
+				{
+					csvFile = File.OpenWrite(outFile.Replace(".png", ".csv"));
+					csvWriter = new StreamWriter(csvFile);
+				}
+
 				try
 				{
 					int columns = Math.Min(listBoxImages.Items.Count, Convert.ToInt32(textBoxColumns.Text));
@@ -72,6 +82,9 @@ namespace ImageMerge
 								collage.Save(outFile, ImageFormat.Png);
 								TimeSpan time = DateTime.Now - start;
 
+								if (checkBoxCsv.IsChecked == true)
+									csvWriter.Close();
+
 								MessageBox.Show("Image created in " + time.TotalMilliseconds + "ms.", "Image created");
 
 								return;
@@ -81,6 +94,9 @@ namespace ImageMerge
 							var image = Bitmap.FromFile(imagePath);
 
 							graphics.DrawImageUnscaled(image, offset * column, offset * row);
+
+							if (checkBoxCsv.IsChecked == true)
+								csvWriter.WriteLine(String.Format("{0},{1},{2}", imagePath.Replace(textBoxBasePath.Text, String.Empty), offset * column, offset * row));
 						}
 					}
 				}
@@ -89,6 +105,11 @@ namespace ImageMerge
 					MessageBox.Show(exp.Message, "Error");
 				}
 			}
+		}
+
+		private void buttonClear_Click(object sender, RoutedEventArgs e)
+		{
+			listBoxImages.Items.Clear();
 		}
 	}
 }
