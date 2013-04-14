@@ -62,14 +62,15 @@ namespace ImageMerge
 					csvWriter = new StreamWriter(csvFile);
 				}
 
+				int columns = Math.Min(listBoxImages.Items.Count, Convert.ToInt32(textBoxColumns.Text));
+				int rows = (int)Math.Ceiling(listBoxImages.Items.Count / (double)columns);
+
+				int offset = Convert.ToInt32(textBoxOffset.Text);
+				var collage = new Bitmap(columns * offset, rows * offset);
+
 				try
 				{
-					int columns = Math.Min(listBoxImages.Items.Count, Convert.ToInt32(textBoxColumns.Text));
-					int rows = (int)Math.Ceiling(listBoxImages.Items.Count / (double)columns);
 
-					int offset = Convert.ToInt32(textBoxOffset.Text);
-
-					var collage = new Bitmap(columns * offset, rows * offset);
 					var graphics = Graphics.FromImage(collage);
 
 					int index = 0;
@@ -78,17 +79,7 @@ namespace ImageMerge
 						for (int column = 0; column < columns; ++column)
 						{
 							if (index == listBoxImages.Items.Count)
-							{
-								collage.Save(outFile, ImageFormat.Png);
-								TimeSpan time = DateTime.Now - start;
-
-								if (checkBoxCsv.IsChecked == true)
-									csvWriter.Close();
-
-								MessageBox.Show("Image created in " + time.TotalMilliseconds + "ms.", "Image created");
-
 								return;
-							}
 
 							string imagePath = listBoxImages.Items[index++].ToString();
 							var image = Bitmap.FromFile(imagePath);
@@ -103,6 +94,16 @@ namespace ImageMerge
 				catch (Exception exp)
 				{
 					MessageBox.Show(exp.Message, "Error");
+				}
+				finally
+				{
+					collage.Save(outFile, ImageFormat.Png);
+					TimeSpan time = DateTime.Now - start;
+
+					if (checkBoxCsv.IsChecked == true)
+						csvWriter.Close();
+
+					MessageBox.Show("Image created in " + time.TotalMilliseconds + "ms.", "Image created");
 				}
 			}
 		}
